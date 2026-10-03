@@ -5,6 +5,7 @@ import { randomUUID } from "crypto";
 import { AppError } from "../../middlewares/error-handler";
 import * as authRepository from "./auth.repository";
 import { type LoginDTO } from "./dto/login.dto";
+import { type RegisterDTO } from "./dto/register.dto";
 import { revogarToken } from "./token-blacklist.service";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -23,6 +24,28 @@ export interface LoginResult {
         email: string;
     };
 }
+
+export const register = async ({ nome, email, senha }: RegisterDTO): Promise<{ id: string; nome: string; email: string; }> => {
+    const usuarioExistente = await authRepository.findByEmail(email);
+
+    if (usuarioExistente) {
+        throw new AppError("E-mail já cadastrado.", 409);
+    }
+
+    const senhaHash = await bcrypt.hash(senha, 10);
+
+    const usuario = await authRepository.createUser(
+        nome,
+        email,
+        senhaHash
+    );
+
+    return {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+    };
+};
 
 export const login = async ({ email, senha }: LoginDTO): Promise<LoginResult> => {
     const usuario = await authRepository.findByEmail(email);
@@ -72,3 +95,4 @@ export const logout = async (payload: jwt.JwtPayload): Promise<void> => {
         payload.exp
     );
 };
+

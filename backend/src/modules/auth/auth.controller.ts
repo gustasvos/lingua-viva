@@ -1,8 +1,27 @@
 import { type Request, type Response, type NextFunction } from "express";
 
 import { AppError } from "../../middlewares/error-handler";
-import { loginSchema } from "./auth.validation";
+import { loginSchema, registerSchema } from "./auth.validation";
 import * as authService from "./auth.service";
+
+export const register = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const parsed = registerSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            return res.status(400).json({
+                message: "Dados inválidos.",
+                erros: parsed.error.flatten().fieldErrors,
+            });
+        }
+
+        const usuario = await authService.register(parsed.data);
+
+        return res.status(201).json(usuario);
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
