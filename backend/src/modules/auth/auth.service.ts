@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { randomUUID } from "crypto";
 
 import { AppError } from "../../middlewares/error-handler";
 import * as authRepository from "./auth.repository";
 import { type LoginDTO } from "./dto/login.dto";
 import { type RegisterDTO } from "./dto/register.dto";
 import { revogarToken } from "./token-blacklist.service";
+import { generateAccessToken, generateRefreshToken, rotateRefreshToken, revokeRefreshToken } from "./token.service";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -18,6 +18,7 @@ const JWT_EXPIRES_IN_SECONDS = 15 * 60;
 
 export interface LoginResult {
     accessToken: string;
+    refreshToken: string;
     usuario: {
         id: string;
         nome: string;
@@ -63,20 +64,12 @@ export const login = async ({ email, senha }: LoginDTO): Promise<LoginResult> =>
         throw new AppError("Credenciais inválidas.", 401);
     }
 
-    const accessToken = jwt.sign(
-        {
-            sub: usuario.id,
-            jti: randomUUID(),
-        },
-        JWT_SECRET,
-        {
-            algorithm: "HS256",
-            expiresIn: JWT_EXPIRES_IN_SECONDS,
-        }
-    );
+    const accessToken = generateAccessToken(usuario.id);
+    const refreshToken = await generateRefreshToken(usuario.id);
 
     return {
         accessToken,
+        refreshToken,
         usuario: {
             id: usuario.id,
             nome: usuario.nome,
@@ -85,14 +78,18 @@ export const login = async ({ email, senha }: LoginDTO): Promise<LoginResult> =>
     };
 };
 
-export const logout = async (payload: jwt.JwtPayload): Promise<void> => {
-    if (!payload.jti || !payload.exp) {
-        return;
+export const refresh = async (refreshToken: string) => {
+    return rotateRefreshToken(refreshToken);
+};
+
+export const logout = async (payload: jwt.JwtPayload, refreshToken: string): Promise<void> => {
+    if (payload.jti && payload.exp) {
+        await revogarToken(
+            payload.jti,
+            payload.exp
+        )
     }
 
-    await revogarToken(
-        payload.jti,
-        payload.exp
-    );
+    await revokeRefreshToken(refreshToken)
 };
 

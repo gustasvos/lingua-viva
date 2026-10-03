@@ -44,6 +44,24 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                message: "Refresh token não informado.",
+            });
+        }
+
+        const tokens = await authService.refresh(refreshToken);
+
+        return res.status(200).json(tokens);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.user) {
@@ -53,7 +71,18 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
             );
         }
 
-        await authService.logout(req.user);
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                message: "Refresh token não informado.",
+            });
+        }
+
+        await authService.logout(
+            req.user,
+            refreshToken
+        );
 
         return res.status(200).json({
             message: "Logout realizado com sucesso.",
