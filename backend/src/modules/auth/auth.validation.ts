@@ -11,6 +11,12 @@ export const loginSchema = z.object({
         .min(1, "Senha obrigatória."),
 });
 
+export const googleLoginSchema = z.object({
+    idToken: z
+        .string()
+        .min(1, "Token do Google obrigatório."),
+});
+
 export const registerSchema = z.object({
     nome: z
         .string()

@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
 
 import { AppError } from "../../middlewares/error-handler";
-import { loginSchema, registerSchema } from "./auth.validation";
+import { googleLoginSchema, loginSchema, registerSchema } from "./auth.validation";
 import * as authService from "./auth.service";
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -37,6 +37,25 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const resultado = await authService.login(
             parsed.data
         );
+
+        return res.status(200).json(resultado);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const loginWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const parsed = googleLoginSchema.safeParse(req.body);
+
+        if (!parsed.success) {
+            return res.status(400).json({
+                message: "Dados inválidos.",
+                erros: parsed.error.flatten().fieldErrors,
+            });
+        }
+
+        const resultado = await authService.loginWithGoogle(parsed.data.idToken);
 
         return res.status(200).json(resultado);
     } catch (error) {

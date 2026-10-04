@@ -10,6 +10,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    volumes:
+      - ./lingua-viva-e14a1-firebase-adminsdk-fbsvc-dfeffb2321.json:/run/secrets/firebase-service-account.json:ro
 
   postgres:
     image: postgres:16-alpine
