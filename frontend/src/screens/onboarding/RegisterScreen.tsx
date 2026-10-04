@@ -38,7 +38,7 @@ export function RegisterScreen({ navigation }: Props) {
     <Screen background="plain">
       <ScreenHeader
         title="Criar conta"
-        subtitle="Gratuito, sem cartão de crédito"
+        subtitle=""
         onBack={navigation.goBack}
         style={{ borderBottomWidth: 0 }}
       />

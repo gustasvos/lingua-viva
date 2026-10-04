@@ -11,14 +11,26 @@
       "backgroundColor": "#6D28D9",
       "resizeMode": "contain"
     },
-    "ios": { "supportsTablet": true },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.linguaviva.app"
+    },
     "android": {
-      "adaptiveIcon": { "backgroundColor": "#6D28D9" },
+      "package": "com.linguaviva.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#6D28D9"
+      },
       "edgeToEdgeEnabled": true
     },
     "extra": {
-      "apiBaseUrl": "https://api.linguaviva.local",
-      "useMockApi": true
-    }
+      "apiBaseUrl": "http://172.17.224.1:3000",
+      "useMockApi": false,
+      "eas": {
+        "projectId": "b6353037-eaa5-4d08-a6d9-c657248f0851"
+      }
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ]
   }
 }

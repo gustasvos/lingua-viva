@@ -4,6 +4,8 @@ import { api } from '../services/api';
 import { STORAGE_KEYS } from '../services/config';
 import { setAuthToken } from '../services/http';
 import { AuthSession, LoginPayload, RegisterPayload, User } from '../services/types';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
 
 type AuthContextValue = {
   user: User | null;
@@ -51,6 +53,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
+  useEffect(() => {
+    GoogleSignin.configure({ webClientId: '521064247308-n8hum167s7gf0a2umefojslujv9gpogb.apps.googleusercontent.com' });
+  }, []);
+
   const persist = useCallback(async (session: AuthSession) => {
     setAuthToken(session.token);
     setUser(session.user);
@@ -94,7 +100,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isGuest: user?.id === 'guest',
       signOut: async () => {
         try {
-          await api.auth.logout();
+          const raw = await AsyncStorage.getItem(STORAGE_KEYS.session);
+          const refreshToken = raw ? (JSON.parse(raw) as AuthSession).refreshToken : undefined;
+          await api.auth.logout(refreshToken);
         } catch {
           // mesmo se o servidor falhar, limpamos a sessão local
         }

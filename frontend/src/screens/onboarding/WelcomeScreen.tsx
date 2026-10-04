@@ -33,9 +33,9 @@ export function WelcomeScreen({ navigation }: Props) {
             <Text style={{ fontSize: 28 }}>🌐</Text>
           </View>
           <Text style={styles.heroTitle}>Aprenda idiomas{'\n'}do jeito certo</Text>
-          <Text style={styles.heroSubtitle}>
+          {/* <Text style={styles.heroSubtitle}>
             Método científico e gamificação para um estudo que cabe na sua rotina.
-          </Text>
+          </Text> */}
         </LinearGradient>
 
         <View style={styles.body}>
