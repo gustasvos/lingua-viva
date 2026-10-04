@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import {
   Badge,
   Card,
@@ -31,10 +31,10 @@ const MENU: { icon: string; label: string; screen: keyof RootStackParamList }[] 
   { icon: '🎙️', label: 'Pronúncia', screen: 'Pronunciation' },
   { icon: '🌐', label: 'Tradução', screen: 'Translation' },
   { icon: '📦', label: 'Conteúdo offline', screen: 'Offline' },
-  { icon: '🛍️', label: 'Loja de conteúdo', screen: 'Store' },
+  // { icon: '🛍️', label: 'Loja de conteúdo', screen: 'Store' },
   { icon: '📥', label: 'Importar / Exportar', screen: 'ImportExport' },
   { icon: '🔔', label: 'Notificações', screen: 'Notifications' },
-  { icon: '⚙️', label: 'Configurações', screen: 'Settings' },
+  // { icon: '⚙️', label: 'Configurações', screen: 'Settings' },
 ];
 
 export function ProfileScreen() {
@@ -52,7 +52,14 @@ export function ProfileScreen() {
       <GradientHeader colors={gradients.brandDeep}>
         <View style={styles.headerRow}>
           <View style={styles.avatar}>
-            <Text style={{ fontSize: 30 }}>{user?.avatar ?? '😊'}</Text>
+            {/^https?:\/\//.test(user?.avatar ?? '') ? (
+              <Image
+                source={{ uri: user!.avatar }}
+                style={{ width: 62, height: 62, borderRadius: 22 }}
+              />
+            ) : (
+              <Text style={{ fontSize: 30 }}>{user?.avatar ?? '😊'}</Text>
+            )}
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.name}>{user?.name ?? 'Usuário'}</Text>

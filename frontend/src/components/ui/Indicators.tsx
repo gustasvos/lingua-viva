@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle, Image } from 'react-native';
 import { AccentName, useTheme } from '../../theme';
 import { Badge } from './Badge';
 import { LevelId } from '../../services/types';
@@ -150,6 +150,8 @@ export function AudioPlayer({
 export function Avatar({ emoji, size = 'md' }: { emoji: string; size?: 'sm' | 'md' | 'lg' | 'xl' }) {
   const theme = useTheme();
   const dimension = { sm: 32, md: 40, lg: 48, xl: 64 }[size];
+  const isUrl = /^https?:\/\//.test(emoji);
+
   return (
     <View
       style={{
@@ -159,9 +161,14 @@ export function Avatar({ emoji, size = 'md' }: { emoji: string; size?: 'sm' | 'm
         backgroundColor: theme.colors.primarySoft,
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
       }}
     >
-      <Text style={{ fontSize: dimension * 0.5 }}>{emoji}</Text>
+      {isUrl ? (
+        <Image source={{ uri: emoji }} style={{ width: dimension, height: dimension }} />
+      ) : (
+        <Text style={{ fontSize: dimension * 0.5 }}>{emoji}</Text>
+      )}
     </View>
   );
 }

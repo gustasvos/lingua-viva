@@ -23,7 +23,7 @@ const mockSession = (name: string, email: string): AuthSession => ({
 type BackendSession = {
   accessToken: string;
   refreshToken: string;
-  usuario: { id: string; nome: string; email: string };
+  usuario: { id: string; nome: string; email: string; avatarUrl: string | null };
 };
 
 function toAuthSession(response: BackendSession): AuthSession {
@@ -34,6 +34,7 @@ function toAuthSession(response: BackendSession): AuthSession {
       id: response.usuario.id,
       name: response.usuario.nome,
       email: response.usuario.email,
+      avatar: response.usuario.avatarUrl ?? '😊',
     },
   };
 }

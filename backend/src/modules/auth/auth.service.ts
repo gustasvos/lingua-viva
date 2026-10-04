@@ -24,6 +24,7 @@ export interface LoginResult {
         id: string;
         nome: string;
         email: string;
+        avatarUrl: string | null;
     };
 }
 
@@ -77,6 +78,7 @@ export const login = async ({ email, senha }: LoginDTO): Promise<LoginResult> =>
             id: usuario.id,
             nome: usuario.nome,
             email: usuario.email,
+            avatarUrl: usuario.avatar_url,
         },
     };
 };
@@ -119,6 +121,7 @@ export const loginWithGoogle = async (idToken: string): Promise<GoogleLoginResul
             id: usuario.id,
             nome: usuario.nome,
             email: usuario.email,
+            avatarUrl: usuario.avatar_url,
         },
     };
 };

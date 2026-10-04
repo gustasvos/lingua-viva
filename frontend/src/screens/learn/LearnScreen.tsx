@@ -108,7 +108,7 @@ export function LearnScreen() {
               {languageInfo.flag} {languageInfo.name} · {completedCount} lições concluídas
             </Text>
           </View>
-          <IconButton icon="🛍️" tone="primary" onPress={() => navigation.navigate('Store')} />
+          {/* <IconButton icon="🛍️" tone="primary" onPress={() => navigation.navigate('Store')} /> */}
           <IconButton
             icon={reordering ? '✓' : '⇅'}
             accessibilityLabel="Reordenar lições"
